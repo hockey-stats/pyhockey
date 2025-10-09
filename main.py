@@ -1,7 +1,7 @@
 import duckdb
 import polars as pl
 
-from config import MOTHERDUCK_READ_TOKEN
+from pyhockey.util.config import MOTHERDUCK_READ_TOKEN
 
 def main():
     
@@ -15,9 +15,9 @@ def main():
                     team='TOR' AND
                     situation='5on5'
                  ;
-                 """).pl()
-    with pl.Config(tbl_cols=30):
-        print(df)
+                 """)
+
+    print(df)
 
 
 

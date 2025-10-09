@@ -1,0 +1,68 @@
+"""
+Module used to construct SQL queries that will be used to query the database.
+
+Instead of each individual module building the queries based on their provided inputs,
+use this module to manage this task in a central location.
+
+When each of the primary modules are called, they will call a function here, and using
+the provided parameters, an SQL query string will be constructed and returned.
+"""
+
+
+def construct_query(table_name: str,
+                    column_mapping: dict[str],
+                    qualifiers: dict[str] = None) -> str:
+    """
+    Method that takes parameters passed into the primary functions and constructs an
+    SQL query that can be used to query the data.
+
+    :param str table_name: The name of the table being queried.
+    :param dict[str] column_mapping: A dict mapping column names in the table to values they
+                                     need to be evaluated against. Multiple values can be provided
+                                     in a list and all will be combined in an 'OR' statement.
+    :param dict[str] qualifiers: A dict mapping certain column names to evaluations which will be
+                                 applied to the query, e.g. '<' or '>' conditions, defaults to None.
+
+    :return str: The full query provided as a string.
+    """
+
+    query: str = f"SELECT * FROM {table_name} WHERE "
+
+    query_conditions: list[str] = []
+    for key, value in column_mapping.items():
+        # The keys of the column_mapping dict will be strings corresponding to the column
+        # names in the table, whereas the values will be filters applied to those columns.
+        # These values can be of multiple types, and can also potentially be a list of items.
+        if isinstance(value, list):
+            if isinstance(value[0], str):
+                # Add single quotes to value if dealing with strings
+                condition: str = " OR ".join(f"{key} = '{v}'" for v in value)
+            else:
+                condition: str = " OR ".join(f"{key} = {v}" for v in value)
+
+            # Make sure the 'OR' conditions are bracketed
+            condition = f"({condition})"
+
+        # If we're dealing with a singleton and not a list...
+        else:
+            # Add single quotes to value if dealing with strings
+            if isinstance(value, str):
+                condition: str = f"{key} = '{value}'"
+            else:
+                condition: str = f"{key} = {value}"
+
+        query_conditions.append(condition)
+
+    if qualifiers:
+        # Qualifiers will be provided in a dict in a format, e.g.,
+        #   'iceTime': '>100',
+        # to indicate that the query should filter for entries with iceTime > 100.
+
+        for key, value in qualifiers.items():
+            query_conditions.append(f"{key} {value}")
+
+    all_conditions: str = " AND ".join(query_conditions)
+
+    query += all_conditions
+
+    return query
