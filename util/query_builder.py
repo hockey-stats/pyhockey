@@ -82,8 +82,9 @@ def construct_query(table_name: str,
         # names in the table, whereas the values will be filters applied to those columns.
         # These values can be of multiple types, and can also potentially be a list of items.
 
+        # This condition will raise an error if mis-matched types were provided.
         if check_input_type(value, column_name, COLUMN_SCHEMA[column_name]):
-            continue
+            pass
 
         if isinstance(value, list):
             if isinstance(value[0], str):

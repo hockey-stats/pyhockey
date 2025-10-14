@@ -9,12 +9,14 @@ def test_construct_query_simple():
     """
     conditions: dict[str] = {
         'team': 'TOR',
-        'season': 2025
+        'season': 2025,
+        'situation': '5on5'
     }
 
     result: str = construct_query(table_name='skaters', column_mapping=conditions)
 
-    expected: str = "SELECT * FROM skaters WHERE team = 'TOR' AND season = 2025"
+    expected: str = "SELECT * FROM skaters WHERE team = 'TOR' AND season = 2025 AND "\
+                    "situation = '5on5'"
 
     assert result == expected
 
@@ -35,7 +37,7 @@ def test_construct_query_complex():
     }
 
     result: str = construct_query(table_name='goalies', column_mapping=conditions,
-                             qualifiers=qualifiers)
+                                  qualifiers=qualifiers)
 
     expected: str = "SELECT * FROM goalies WHERE (team = 'TOR' OR team = 'MTL' OR team = 'OTT') "\
                     "AND (season = 2024 OR season = 2025) "\
@@ -43,6 +45,20 @@ def test_construct_query_complex():
                     "AND iceTime <100"
 
     assert result == expected
+
+
+def test_construct_query_fails_with_bad_input_type():
+    """
+    That that construct_query() raises a ValueError if given a column mapping with mis-matched
+    input types.
+    """
+    conditions: dict[str] = {
+        'team': 'TOR',
+        'season': '2025'
+    }
+
+    with pytest.raises(ValueError):
+        construct_query(table_name='skaters', column_mapping=conditions)
 
 
 def test_check_input_type_singleton_success():
