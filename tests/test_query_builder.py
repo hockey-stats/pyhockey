@@ -1,6 +1,7 @@
 import pytest
 
-from util.query_builder import construct_query, check_input_type
+from util.input_validation import check_input_type
+from util.query_builder import construct_query
 
 
 def test_construct_query_simple():

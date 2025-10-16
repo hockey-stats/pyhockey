@@ -8,53 +8,7 @@ When each of the primary modules are called, they will call a function here, and
 the provided parameters, an SQL query string will be constructed and returned.
 """
 
-import datetime
-
-# A mapping of column names in the database to the expected types of the values in those columns
-COLUMN_SCHEMA = {
-    'name': str,
-    'gameID': int,
-    'gameDate': datetime.date,
-    'season': int,
-    'team': str,
-    'state': str,
-    'situation': str,
-    'iceTime': (int, float),
-    'shotsAgainst': int,
-    'goalsAgainst': int,
-    'xGoalsAgainst': (int, float),
-    'gamesPlayed': int,
-    'xGoals': (int, float),
-    'goals': int,
-    'lowDangerShots': int,
-    'mediumDangerShots': int,
-    'highDangerShots': int,
-    'lowDangerxGoals': (int, float),
-    'mediumDangerxGoals': (int, float),
-    'highDangerxGoals': (int, float),
-    'lowDangerGoals': int,
-    'mediumDangerGoals': int,
-    'highDangerGoals': int,
-    'position': str,
-    'primaryAssists': int,
-    'secondaryAssists': int,
-    'shots': int,
-    'individualxGoals': (int, float),
-    'goalsFor': int,
-    'xGoalsFor': (int, float),
-    'xGoalsShare': (int, float),
-    'corsiFor': int,
-    'corsiAgainst': int,
-    'corsiShare': (int, float),
-    'xGoalsForPerHour': (int, float),
-    'xGoalsAgainstPerHour': (int, float),
-    'goalsForPerHour': (int, float),
-    'goalsAgainstPerHour': (int, float),
-    'pointsPerHour': (int, float),
-    'goalsPerHour': (int, float),
-    'averageIceTime': (int, float),
-    'corsiPercentage': (int, float),
-}
+from util.input_validation import check_input_type
 
 
 def construct_query(table_name: str,
@@ -121,35 +75,3 @@ def construct_query(table_name: str,
     return query
 
 
-def check_input_type(value: str | int | list[int] | list[str],
-                     column_name: str,
-                     desired_type: type) -> bool:
-    """
-    Validates the types provided to the primary functions to make sure they align with
-    database expectations when building the query.
-
-    :param str | int | list[int] | list[str] value: The input value being provided. Since the
-                                                    type of this is what's being checked, it can
-                                                    be of any type that a user may provide, as well
-                                                    as lists of that type.
-    :param str column_name: The column name in the database that the value is filtering against.
-    :param type desired_type: The type that the database will expect the value to be.
-
-    :raises ValueError: This function will raise a ValueError, ending the program, if a mismatched
-                        type for the value is provided.
-
-    :return bool: If no error is raised, the function will return True.
-    """
-
-    # First make sure values that were supplied are the correct types.
-    if not isinstance(value, desired_type):
-        if isinstance(value, list):
-            for v in value:
-                if not isinstance(v, desired_type):
-                    raise ValueError(f"ERROR: Values provided for {column_name} must be "\
-                                     f"{desired_type}, received {type(v)}: {v}")
-        else:
-            raise ValueError(f"ERROR: Values provided for {column_name} must be "\
-                                f"{desired_type}, received {type(value)}: {value}")
-
-    return True
