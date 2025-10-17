@@ -1,6 +1,5 @@
 import pytest
 
-from util.input_validation import check_input_type
 from util.query_builder import construct_query
 
 
@@ -30,7 +29,7 @@ def test_construct_query_complex():
     conditions: dict[str] = {
         'team': ['TOR', 'MTL', 'OTT'],
         'season': [2024, 2025],
-        'situation': ['pk', 'pp']
+        'situation': ['all', '5on5'],
     }
 
     qualifiers: dict[str] = {
@@ -38,12 +37,13 @@ def test_construct_query_complex():
     }
 
     result: str = construct_query(table_name='goalies', column_mapping=conditions,
-                                  qualifiers=qualifiers)
+                                  qualifiers=qualifiers, order_by=['team', 'season'])
 
     expected: str = "SELECT * FROM goalies WHERE (team = 'TOR' OR team = 'MTL' OR team = 'OTT') "\
                     "AND (season = 2024 OR season = 2025) "\
-                    "AND (situation = 'pk' OR situation = 'pp') "\
-                    "AND iceTime <100"
+                    "AND (situation = 'all' OR situation = '5on5') "\
+                    "AND iceTime <100 "\
+                    "ORDER BY team, season"
 
     assert result == expected
 
@@ -60,42 +60,3 @@ def test_construct_query_fails_with_bad_input_type():
 
     with pytest.raises(ValueError):
         construct_query(table_name='skaters', column_mapping=conditions)
-
-
-def test_check_input_type_singleton_success():
-    """
-    Test that check_input_type() works as expected with single strings and ints.
-    """
-    result_str: bool = check_input_type(value='TOR', column_name='team', desired_type=str)
-    result_int: bool = check_input_type(value=2024, column_name='season', desired_type=int)
-
-    assert result_str and result_int
-
-
-def test_check_input_type_singleton_failure():
-    """
-    Test that check_input_type() raises a ValueError when mismatched singletons are provided.
-    """
-    with pytest.raises(ValueError):
-        check_input_type(value='2024', column_name='season', desired_type=int)
-
-
-def test_check_input_type_list_success():
-    """
-    Test that check_input_type() works as expected with lists of strings and ints.
-    """
-    result_str: bool = check_input_type(value=['TOR', 'MTL', 'OTT'], column_name='team',
-                                        desired_type=str)
-    result_int: bool = check_input_type(value=[2023, 2024, 2025], column_name='season',
-                                        desired_type=int)
-
-    assert result_str and result_int
-
-
-def test_check_input_type_list_failure():
-    """
-    Test that check_input_type() fails as expected when given a list with at least one incorrect
-    type.
-    """
-    with pytest.raises(ValueError):
-        check_input_type(value=[2023, 2024, '2025'], column_name='season', desired_type=int)

@@ -1,9 +1,12 @@
+"""
+Modules for handling calls to the `skaters` table, which holds season summaries for each skater,
+divided by game state.
+"""
+
 import polars as pl
 
 from util.db_connect import create_connection
 from util.query_builder import construct_query
-
-
 
 
 def skater_summaries(season: int | list[int],
@@ -44,7 +47,7 @@ def skater_summaries(season: int | list[int],
     }
 
     query: str = construct_query(table_name='skaters', column_mapping=column_mapping,
-                                 qualifiers=qualifiers)
+                                 qualifiers=qualifiers, order_by=['team', 'season'])
 
     connection = create_connection()
 
@@ -131,8 +134,3 @@ def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
     )
 
     return final_df
-
-
-if __name__ == '__main__':
-    with pl.Config(tbl_cols=100, tbl_rows=100):
-        print(skater_summaries(season=[2024, 2023, 2022], team='TOR', min_icetime=500, combine_seasons=True))

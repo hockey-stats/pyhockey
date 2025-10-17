@@ -1,6 +1,15 @@
+"""
+Module for checking that provided inputs are of the correct type as expected by the database 
+schema, and also checking that the values provided are valid in the context of what the
+database expects (i.e. using the proper team acronyms and seasons for which data is
+available).
+"""
+
 import datetime
 
+### CONSTANTS #####################################################################################
 
+# The valid values accepted for each column
 VALID_SITUATIONS = ['all', '5on5', '4on5', '5on4', 'other']
 
 VALID_SEASONS = list(range(2008, 2026))
@@ -61,6 +70,7 @@ COLUMN_SCHEMA = {
     'averageIceTime': (int, float),
     'corsiPercentage': (int, float),
 }
+### END CONSTANTS #################################################################################
 
 
 def check_input_values(column_mapping: dict[str]) -> bool:
@@ -74,12 +84,15 @@ def check_input_values(column_mapping: dict[str]) -> bool:
 
     :param dict[str] column_mapping: A mapping of the columns to check with their provided inputs
 
+    :raises ValueError: This function will raise a ValueError, ending the program, if an invalid
+                        value is provided.
+
     :return bool: Returns True if no ValueError is raised
     """
 
     for column, input_value in column_mapping.items():
 
-        valid_inputs: list[str | int] = VALID_INPUTS[column]
+        valid_inputs: list[str | int] = VALID_INPUT_VALUES[column]
 
         # If input_value is a singleton check that it's in the list of valid inputs, but
         # if input_value is a list check that it is a subset
@@ -96,19 +109,12 @@ def check_input_values(column_mapping: dict[str]) -> bool:
     return True
 
 
-def check_input_type(value: str | int | list[int] | list[str],
-                     column_name: str,
-                     desired_type: type) -> bool:
+def check_input_type(column_mapping: dict[str]) -> bool:
     """
     Validates the types provided to the primary functions to make sure they align with
     database expectations when building the query.
 
-    :param str | int | list[int] | list[str] value: The input value being provided. Since the
-                                                    type of this is what's being checked, it can
-                                                    be of any type that a user may provide, as well
-                                                    as lists of that type.
-    :param str column_name: The column name in the database that the value is filtering against.
-    :param type desired_type: The type that the database will expect the value to be.
+    :param dict[str] column_mapping: A mapping of the columns to check with their provided inputs
 
     :raises ValueError: This function will raise a ValueError, ending the program, if a mismatched
                         type for the value is provided.
@@ -116,15 +122,17 @@ def check_input_type(value: str | int | list[int] | list[str],
     :return bool: If no error is raised, the function will return True.
     """
 
-    # First make sure values that were supplied are the correct types.
-    if not isinstance(value, desired_type):
-        if isinstance(value, list):
-            for v in value:
-                if not isinstance(v, desired_type):
-                    raise ValueError(f"ERROR: Values provided for {column_name} must be "\
-                                     f"{desired_type}, received {type(v)}: {v}")
-        else:
-            raise ValueError(f"ERROR: Values provided for {column_name} must be "\
-                                f"{desired_type}, received {type(value)}: {value}")
+    for column_name, value in column_mapping.items():
+        desired_type = COLUMN_SCHEMA[column_name]
+        # First make sure values that were supplied are the correct types.
+        if not isinstance(value, desired_type):
+            if isinstance(value, list):
+                for v in value:
+                    if not isinstance(v, desired_type):
+                        raise ValueError(f"Values provided for {column_name} must be "\
+                                         f"{desired_type}, received {type(v)}: {v}")
+            else:
+                raise ValueError(f"Values provided for {column_name} must be "\
+                                 f"{desired_type}, received {type(value)}: {value}")
 
     return True

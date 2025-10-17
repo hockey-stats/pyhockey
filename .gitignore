@@ -1,7 +1,7 @@
 # Python-generated files
 __pycache__/
-tests/__pycache__/
-util/__pycache__/
+*/__pycache__/
+*/__pycache__/
 *.py[oc]
 build/
 dist/

@@ -8,12 +8,13 @@ When each of the primary modules are called, they will call a function here, and
 the provided parameters, an SQL query string will be constructed and returned.
 """
 
-from util.input_validation import check_input_type
+from util.input_validation import check_input_type, check_input_values
 
 
 def construct_query(table_name: str,
                     column_mapping: dict[str],
-                    qualifiers: dict[str] = None) -> str:
+                    qualifiers: dict[str] = None,
+                    order_by: list[str] = None) -> str:
     """
     Method that takes parameters passed into the primary functions and constructs an
     SQL query that can be used to query the data.
@@ -24,9 +25,15 @@ def construct_query(table_name: str,
                                      in a list and all will be combined in an 'OR' statement.
     :param dict[str] qualifiers: A dict mapping certain column names to evaluations which will be
                                  applied to the query, e.g. '<' or '>' conditions, defaults to None.
+    :param list[str] order_by: A list of strings corresponding to column names that the results
+                               will be sorted by.
 
     :return str: The full query provided as a string.
     """
+    # This condition will raise an error if mis-matched types or invalid values were provided
+    if check_input_type(column_mapping=column_mapping) and\
+       check_input_values(column_mapping=column_mapping):
+        pass
 
     query: str = f"SELECT * FROM {table_name} WHERE "
 
@@ -35,11 +42,6 @@ def construct_query(table_name: str,
         # The keys of the column_mapping dict will be strings corresponding to the column
         # names in the table, whereas the values will be filters applied to those columns.
         # These values can be of multiple types, and can also potentially be a list of items.
-
-        # This condition will raise an error if mis-matched types were provided.
-        if check_input_type(value, column_name, COLUMN_SCHEMA[column_name]):
-            pass
-
         if isinstance(value, list):
             if isinstance(value[0], str):
                 # Add single quotes to value if dealing with strings
@@ -71,6 +73,13 @@ def construct_query(table_name: str,
     all_conditions: str = " AND ".join(query_conditions)
 
     query += all_conditions
+
+    if order_by:
+        # If order_by is provided, it will be a list of column names, so construct
+        # the ORDER BY statement and append it to the query.
+        order: str = f" ORDER BY {', '.join(order_by)}"
+
+        query += order
 
     return query
 
