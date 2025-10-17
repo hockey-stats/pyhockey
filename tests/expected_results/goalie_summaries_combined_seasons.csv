@@ -1,0 +1,8 @@
+playerID,season,name,team,situation,gamesPlayed,iceTime,xGoals,goals,lowDangerShots,mediumDangerShots,highDangerShots,lowDangerxGoals,mediumDangerxGoals,highDangerxGoals,lowDangerGoals,mediumDangerGoals,highDangerGoals
+8478470,"2023,2024",Sam Montembeault,MTL,all,103,5962,320.93,293,3296,810,375,95.17,101.59,124.17,107,115,71
+8480051,"2023,2024",Cayden Primeau,MTL,all,34,1848,101.11,107,1066,270,107,31.78,34.18,35.14,48,39,20
+8482487,2024,Jakub Dobes,MTL,all,16,874,49.03,40,481,141,51,14.42,18.03,16.58,14,20,6
+8474889,2023,Martin Jones,TOR,all,22,1169,62.3,56,632,153,72,19.05,19.42,23.84,21,21,14
+8476932,2024,Anthony Stolarz,TOR,all,34,1986,96.78,71,1142,248,111,30.41,31.81,34.58,24,27,20
+8478492,2023,Ilya Samsonov,TOR,all,40,2300,111.86,120,1251,272,136,34.27,32.97,44.63,44,41,35
+8479361,"2023,2024",Joseph Woll,TOR,all,67,3913,207.02,183,2140,545,241,61.03,66.93,79.06,75,65,43

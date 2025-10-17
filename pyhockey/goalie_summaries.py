@@ -1,4 +1,6 @@
-"""_summary_
+"""
+Module for handling calls to the 'goalies' table, which holds season summaries for each goalie,
+divided by game state.
 """
 
 import polars as pl
@@ -6,29 +8,12 @@ import polars as pl
 from util.db_connect import create_connection
 from util.query_builder import construct_query
 
-
-def skater_summaries(season: int | list[int],
+def goalie_summaries(season: int | list[int],
                      team: str | list[str] = 'ALL',
-                     min_icetime: int = 0,
+                     min_games_played: int = 0,
                      situation: str = 'all',
                      combine_seasons: bool = False
                      ) -> pl.DataFrame:
-    """
-    Primary function for retrieving skater-level season summaries. Given a season or list of
-    seasons, return skater data summaries for each of those seasons for every game state. 
-
-    Can provide further filters via a team or list of teams, a minimum icetime cutoff, or
-    a specific situation/game state.
-
-    :param int | list[int] season: The (list of) season(s) for which to return data
-    :param str | list[str] team: The (list of) team(s) for which to return data, defaults to 'ALL'
-    :param int min_icetime: A minimum icetime (in minutes) cut-off to apply, defaults to 0
-    :param str situation: One of 'all', '5on5', '4on5', '5on4', or 'other', defaults to 'all'
-    :param bool combine_seasons: If True, and given multiple seasons, combine the results of each
-                                 season into a single entry for each player, defaults to False
-
-    :return pl.DataFrame: The resulting data in a polars DataFrame
-    """
 
     column_mapping: dict[str] = {
         'season': season,
@@ -41,11 +26,11 @@ def skater_summaries(season: int | list[int],
         del column_mapping['team']
 
     qualifiers: dict[str] = {
-        'iceTime': f'>={min_icetime}'
+        'gamesPlayed': f'>={min_games_played}'
     }
 
-    query: str = construct_query(table_name='skaters', column_mapping=column_mapping,
-                                 qualifiers=qualifiers)
+    query : str = construct_query(table_name='goalies', column_mapping=column_mapping,
+                                  qualifiers=qualifiers, order_by=['team', 'season'])
 
     connection = create_connection()
 
@@ -56,15 +41,15 @@ def skater_summaries(season: int | list[int],
             print("The 'combine_seasons' parameter has been set to 'True', but data for only one "\
                   f"season ({season}) was requested. Returning data for just that season...")
             return results
-        results: pl.DataFrame = combine_skater_seasons(results)
+        results: pl.DataFrame = combine_goalie_seasons(results)
 
     return results
 
 
-def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
+def combine_goalie_seasons(df: pl.DataFrame) -> pl.DataFrame:
     """
     Called when a user requests multiple seasons worth of data and wants to have them combined
-    into a single row for each skater.
+    into a single row for each goalie.
 
     Goes through the data provided by the query and combines the data for each player-season into
     one row, returning the resulting DataFrame.
@@ -96,26 +81,15 @@ def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
                 'season': ','.join([str(s) for s in seasons]),
         }
 
-        for col in ['name', 'team', 'position', 'situation']:
+        for col in ['name', 'team', 'situation']:
             combined_info[col] = list(p_df[col])[0]
 
         # Then add the values which are sum totals for each season
-        for col in ['gamesPlayed', 'iceTime', 'points', 'goals', 'xGoalsFor', 'goalsFor',
-                    'xGoalsAgainst', 'goalsAgainst']:
+        for col in ['gamesPlayed', 'iceTime', 'xGoals', 'goals',
+                    'lowDangerShots', 'mediumDangerShots', 'highDangerShots',
+                    'lowDangerxGoals', 'mediumDangerxGoals', 'highDangerxGoals',
+                    'lowDangerGoals', 'mediumDangerGoals', 'highDangerGoals']:
             combined_info[col] = p_df[col].sum()
-
-        # And finally compute rate metrics from each column containing a total metric value,
-        # i.e. goalsFor -> goalsForPerHour (GFph)
-        for total_col, rate_col in zip(['goalsFor', 'goalsAgainst', 'xGoalsFor',
-                                        'xGoalsAgainst', 'points', 'goals'],
-                                        ['goalsForPerHour', 'goalsAgainstPerHour',
-                                         'xGoalsForPerHour', 'xGoalsAgainstPerHour',
-                                         'pointsPerHour', 'goalsPerHour']):
-
-            combined_info[rate_col] = combined_info[total_col] * (60.0 / combined_info['iceTime'])
-
-        combined_info['averageIceTime'] = round(combined_info['iceTime'] /
-                                                combined_info['gamesPlayed'], 2)
 
         player_dfs.append(pl.DataFrame(combined_info))
 
@@ -124,10 +98,18 @@ def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
     final_df = final_df.cast(
         {
             'gamesPlayed': pl.Int16,
-            'points': pl.Int16,
+            'iceTime': pl.Int16,
             'goals': pl.Int16,
-            'goalsFor': pl.Int16,
-            'goalsAgainst': pl.Int16,
+            'xGoals': pl.Float32,
+            'lowDangerShots': pl.Int16,
+            'mediumDangerShots': pl.Int16,
+            'highDangerShots': pl.Int16,
+            'lowDangerxGoals': pl.Float32,
+            'mediumDangerxGoals': pl.Float32,
+            'highDangerxGoals': pl.Float32,
+            'lowDangerGoals': pl.Int16,
+            'mediumDangerGoals': pl.Int16,
+            'highDangerGoals': pl.Int16,
         }
     )
 
