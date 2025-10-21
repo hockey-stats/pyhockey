@@ -3,6 +3,7 @@ Main module for returning season summaries for skaters.
 """
 
 import polars as pl
+import polars.selectors as sc
 
 from util.db_connect import create_connection
 from util.query_builder import construct_query
@@ -58,6 +59,9 @@ def skater_summaries(season: int | list[int],
                   f"season ({season}) was requested. Returning data for just that season...")
             return results
         results: pl.DataFrame = combine_skater_seasons(results)
+
+    # Round all float values to 2 decimal places before returning
+    results = results.with_columns(sc.float().round(2))
 
     return results
 
