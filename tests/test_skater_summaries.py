@@ -1,7 +1,7 @@
 import os
 import polars as pl
 
-from pyhockey.skater_summaries import skater_summaries
+from pyhockey.skater_summary import skater_summaries
 
 
 TEST_RESULT_PATH = os.path.join('tests', 'expected_results')
@@ -16,6 +16,7 @@ def test_standard_skater_summary():
                                             min_icetime=500)
 
     assert result.shape == expected.shape
+
 
 def test_combined_skater_summary():
     """

@@ -1,7 +1,7 @@
 import os
 import polars as pl
 
-from pyhockey.goalie_summaries import goalie_summaries
+from pyhockey.goalie_summary import goalie_summaries
 
 
 TEST_RESULT_PATH = os.path.join('tests', 'expected_results')
@@ -16,6 +16,8 @@ def test_standard_goalie_summary():
                                             min_games_played=10)
 
     assert result.shape == expected.shape
+
+    secrets: inherit
 
 def test_combined_goalie_summary():
     """
