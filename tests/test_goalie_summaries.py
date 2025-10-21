@@ -17,7 +17,6 @@ def test_standard_goalie_summary():
 
     assert result.shape == expected.shape
 
-    secrets: inherit
 
 def test_combined_goalie_summary():
     """
