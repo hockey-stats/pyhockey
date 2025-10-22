@@ -148,3 +148,19 @@ shape: (33, 14)
 │ 2024                          ┆ UTA  ┆ all       ┆ 82          ┆ 4994.22  ┆ 261.690002  ┆ 240      ┆ 240.179993    ┆ 247          ┆ 2.88            ┆ 2.97                ┆ 3.14             ┆ 2.89                 ┆ 60.91          │        
 └───────────────────────────────┴──────┴───────────┴─────────────┴──────────┴─────────────┴──────────┴───────────────┴──────────────┴─────────────────┴─────────────────────┴──────────────────┴──────────────────────┴────────────────┘  
 ```
+
+
+## Working with the data
+
+If you're prefer working with `pandas` datafraames as opposed to `polars` ones, you can use the built-in `to_pandas()` method to make an easy conversion.
+
+```python
+>>> df = skater_summaries(team='TOR', season=2024)
+>>> type(df)
+<class 'polars.dataframe.frame.DataFrame'>
+
+# Use `to_pandas()` to convert the results to a pandas dataframe
+>>> df = df.to_pandas()
+>>> type(df)
+<class 'pandas.core.frame.DataFrame'>
+```
