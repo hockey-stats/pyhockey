@@ -15,6 +15,6 @@ dependencies = [
 authors = [
     {name = "Sohraub Pazuki", email = "sohraubpazuki@gmail.com"},
 ]
-license = "GNU"
+license = "GPL-2.0-or-later"
 license-files = ["LICENSE"]
 keywords = ["hockey", "stats", "statistics", "NHL", "data"]

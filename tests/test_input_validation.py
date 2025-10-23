@@ -1,6 +1,6 @@
 import pytest
 
-from util.input_validation import check_input_values, check_input_type
+from pyhockey.util.input_validation import check_input_values, check_input_type
 
 
 def test_check_valid_inputs_singleton_success():

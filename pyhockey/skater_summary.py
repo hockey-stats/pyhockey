@@ -4,7 +4,7 @@ Main module for returning season summaries for skaters.
 
 import polars as pl
 
-from util.query_table import query_table
+from .util.query_table import query_table
 
 
 # Define custom type for inputs into our queries
@@ -12,10 +12,10 @@ type QueryValue = str | int | float | list[str] | list[int] | list[float]
 
 
 def skater_summary(season: int | list[int],
-                     team: str | list[str] = 'ALL',
-                     min_icetime: int = 0,
-                     situation: str = 'all',
-                     combine_seasons: bool = False) -> pl.DataFrame:
+                   team: str | list[str] = 'ALL',
+                   min_icetime: int = 0,
+                   situation: str = 'all',
+                   combine_seasons: bool = False) -> pl.DataFrame:
     """
     Primary function for retrieving skater-level season summaries. Given a season or list of
     seasons, return skater data summaries for each of those seasons. 

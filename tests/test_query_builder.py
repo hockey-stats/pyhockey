@@ -1,6 +1,6 @@
 import pytest
 
-from util.query_builder import construct_query
+from pyhockey.util.query_builder import construct_query
 
 
 def test_construct_query_simple():
