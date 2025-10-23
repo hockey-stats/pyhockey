@@ -5,7 +5,7 @@ Tool for querying advanced NHL data provided by MoneyPuck.com and NaturalStatTri
 ## Overview
 
 A straightforward library that uses DuckDB and Polars to query a seperately-maintained database
-of data scraped from MoneyPuck (https://www.moneypuck.com) and NaturalStatTrick (https://www.naturalstattrick.com).
+of NHL data scraped from MoneyPuck (https://www.moneypuck.com) and NaturalStatTrick (https://www.naturalstattrick.com).
 
 Allows for easy access to season-summary data at the player- or team-level, as well as game-by-game data for each team. Game-by-game data is also available for players, but as of October 2025, this is only available for the 2025/2026 NHL season.
 
@@ -13,10 +13,10 @@ Allows for easy access to season-summary data at the player- or team-level, as w
 
 ### Season Summaries
 
-To get the stats for each player on a team in a specific season with a minimum 1000 minutes of icetime:
+To get the stats for each skater (i.e. non-goalies) on a team in a specific season with a minimum 1000 minutes of icetime:
 ```python
 >>> import pyhockey
->>> pyhockey.skater_summaries(team='TOR', season=2024, min_icetime=1000)
+>>> pyhockey.skater_summary(team='TOR', season=2024, min_icetime=1000)
 shape: (14, 21)
 ┌──────────┬────────┬──────────────────────┬──────┬──────────┬───────────┬─────────────┬─────────┬────────┬───────┬───────────┬──────────┬───────────────┬──────────────┬─────────────────┬─────────────────────┬──────────────────┬──────────────────────┬───────────────┬──────────────┬────────────────┐
 │ playerID ┆ season ┆ name                 ┆ team ┆ position ┆ situation ┆ gamesPlayed ┆ iceTime ┆ points ┆ goals ┆ xGoalsFor ┆ goalsFor ┆ xGoalsAgainst ┆ goalsAgainst ┆ goalsForPerHour ┆ goalsAgainstPerHour ┆ xGoalsForPerHour ┆ xGoalsAgainstPerHour ┆ pointsPerHour ┆ goalsPerHour ┆ averageIceTime │
@@ -38,10 +38,10 @@ shape: (14, 21)
 
 ```
 
-Can pass multiple values for team or season, as well as specific the situation ('5on5', '4on5', or '5on4'):
+Can pass multiple values for team or season, as well as specify the situation ('5on5', '4on5', or '5on4'):
 ```python
 >>> import pyhockey
->>> pyhockey.skater_summaries(team=['TOR', 'MTL'], season=[2023, 2024], situation='5on5', min_icetime=1000)
+>>> pyhockey.skater_summary(team=['TOR', 'MTL'], season=[2023, 2024], situation='5on5', min_icetime=1000)
 shape: (35, 21)
 ┌──────────┬────────┬──────────────────────┬──────┬──────────┬───────────┬─────────────┬─────────┬────────┬───────┬───────────┬──────────┬───────────────┬──────────────┬─────────────────┬─────────────────────┬──────────────────┬──────────────────────┬───────────────┬──────────────┬────────────────┐
 │ playerID ┆ season ┆ name                 ┆ team ┆ position ┆ situation ┆ gamesPlayed ┆ iceTime ┆ points ┆ goals ┆ xGoalsFor ┆ goalsFor ┆ xGoalsAgainst ┆ goalsAgainst ┆ goalsForPerHour ┆ goalsAgainstPerHour ┆ xGoalsForPerHour ┆ xGoalsAgainstPerHour ┆ pointsPerHour ┆ goalsPerHour ┆ averageIceTime │
@@ -65,7 +65,7 @@ shape: (35, 21)
 When querying multiple seasons, can set `combine_seasons=True` to combine stats for all seasons into a single row:
 ```python
 >>> import pyhockey
->>> pyhockey.skater_summaries(team='TOR', season=[2022, 2023, 2024], situation='5on5', min_icetime=1000, combine_seasons=True)
+>>> pyhockey.skater_summary(team='TOR', season=[2022, 2023, 2024], situation='5on5', min_icetime=1000, combine_seasons=True)
 shape: (21, 21)
 ┌──────────┬────────────────┬──────────────────────┬──────┬──────────┬───────────┬─────────────┬─────────┬────────┬───────┬───────────┬──────────┬───────────────┬──────────────┬─────────────────┬─────────────────────┬──────────────────┬──────────────────────┬───────────────┬──────────────┬────────────────┐ 
 │ playerID ┆ season         ┆ name                 ┆ team ┆ position ┆ situation ┆ gamesPlayed ┆ iceTime ┆ points ┆ goals ┆ xGoalsFor ┆ goalsFor ┆ xGoalsAgainst ┆ goalsAgainst ┆ goalsForPerHour ┆ goalsAgainstPerHour ┆ xGoalsForPerHour ┆ xGoalsAgainstPerHour ┆ pointsPerHour ┆ goalsPerHour ┆ averageIceTime │ 
@@ -90,7 +90,7 @@ The `goalie_summary()` and `team_summary()` functions work in the same way:
 ```python
 # goalie_summary() uses min_games_played instead of min_icetime
 >>> import pyhockey
->>> pyhockey.goalie_summaries(team=['TOR', 'MTL'], season=[2023, 2024], min_games_played=10)
+>>> pyhockey.goalie_summary(team=['TOR', 'MTL'], season=[2023, 2024], min_games_played=10)
 shape: (10, 18)
 ┌──────────┬────────┬──────────────────┬──────┬───────────┬─────────────┬─────────┬────────┬───────┬────────────────┬───────────────────┬─────────────────┬─────────────────┬────────────────────┬──────────────────┬────────────────┬───────────────────┬─────────────────┐        
 │ playerID ┆ season ┆ name             ┆ team ┆ situation ┆ gamesPlayed ┆ iceTime ┆ xGoals ┆ goals ┆ lowDangerShots ┆ mediumDangerShots ┆ highDangerShots ┆ lowDangerxGoals ┆ mediumDangerxGoals ┆ highDangerxGoals ┆ lowDangerGoals ┆ mediumDangerGoals ┆ highDangerGoals │        
@@ -111,7 +111,7 @@ shape: (10, 18)
 ```
 ```python
 >>> import pyhockey
->>> pyhockey.team_summaries(season=list(range(2019, 2025)), combine_seasons=True)
+>>> pyhockey.team_summary(season=list(range(2019, 2025)), combine_seasons=True)
 shape: (33, 14)
 ┌───────────────────────────────┬──────┬───────────┬─────────────┬──────────┬─────────────┬──────────┬───────────────┬──────────────┬─────────────────┬─────────────────────┬──────────────────┬──────────────────────┬────────────────┐
 │ season                        ┆ team ┆ situation ┆ gamesPlayed ┆ iceTime  ┆ xGoalsFor   ┆ goalsFor ┆ xGoalsAgainst ┆ goalsAgainst ┆ goalsForPerHour ┆ goalsAgainstPerHour ┆ xGoalsForPerHour ┆ xGoalsAgainstPerHour ┆ averageIceTime │
@@ -157,11 +157,11 @@ shape: (33, 14)
 
 ## Working with the data
 
-If you're prefer working with `pandas` datafraames as opposed to `polars` ones, you can use the built-in `to_pandas()` method to make an easy conversion.
+If you're prefer working with `pandas` dataframes as opposed to `polars` ones, you can use the built-in `to_pandas()` method to make an easy conversion.
 
 ```python
 >>> import pyhockey
->>> df = pyhockey.skater_summaries(team='TOR', season=2024)
+>>> df = pyhockey.skater_summary(team='TOR', season=2024)
 >>> type(df)
 <class 'polars.dataframe.frame.DataFrame'>
 # Use `to_pandas()` to convert the results to a pandas dataframe
