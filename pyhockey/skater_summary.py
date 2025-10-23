@@ -4,7 +4,7 @@ Main module for returning season summaries for skaters.
 
 import polars as pl
 
-from .util.query_table import query_table
+from pyhockey.util.query_table import query_table
 
 
 # Define custom type for inputs into our queries

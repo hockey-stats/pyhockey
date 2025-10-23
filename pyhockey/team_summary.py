@@ -4,12 +4,11 @@ Main module for returning season summaries for teams.
 
 import polars as pl
 
-from .util.query_table import query_table
+from pyhockey.util.query_table import query_table
 
 
 # Define custom type for inputs into our queries
 type QueryValue = str | int | float | list[str] | list[int] | list[float]
-
 
 
 def team_summary(season: int | list[int],
@@ -32,7 +31,7 @@ def team_summary(season: int | list[int],
     :return pl.DataFrame: The resulting data in a polars DataFrame
     """
 
-    column_mapping: dict[str] = {
+    column_mapping: dict[str, QueryValue] = {
         'season': season,
         'team': team,
         'situation': situation

@@ -29,7 +29,7 @@ VALID_INPUT_VALUES = {
 COLUMN_SCHEMA = {
     'name': str,
     'gameID': int,
-    'gameDate': datetime.date,
+    'gameDate': str,
     'season': int,
     'team': str,
     'state': str,
