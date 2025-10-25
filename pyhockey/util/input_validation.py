@@ -6,6 +6,12 @@ available).
 """
 
 import datetime
+from datetime import datetime
+
+
+# Define custom type for inputs into our queries
+type QueryValue = str | int | float | list[str] | list[int] | list[float]
+
 
 ### CONSTANTS #####################################################################################
 
@@ -136,3 +142,53 @@ def check_input_type(column_mapping: dict[str]) -> bool:
                                  f"{desired_type}, received {type(value)}: {value}")
 
     return True
+
+
+def validate_date_range(column_mapping: dict[str, QueryValue],
+                        qualifiers: dict[str, str]) -> dict[str, QueryValue]:
+    """
+    Function to check any date inputs (e.g. 'start_date', 'end_date') where given in the
+    expected format, and to make sure there are no conflicts between these inputs and the
+    'season' input.
+
+    :param dict[str, QueryValue] column_mapping: The column mapping provided for the query.
+    :param dict[str, str] qualifiers: The qualifiers provided for the query.
+
+    :raises ValueError: Raises a ValueError if a date value was provided in a format that
+                        isn't YYYY-MM-DD, or if end_date is not after start_date.
+
+    :return dict[str, QueryValue]: An updated version of the column mapping.
+    """
+
+    # First checks that both 'start_date' and 'end_date', if provided, match the YYYY-MM-DD format
+    # using datetime.strptime().
+    for date in ['start_date', 'end_date']:
+        if date in qualifiers.keys():
+            date_string: str = qualifiers[date]
+            try:
+                datetime.strptime(date_string, '%Y-%m-%d')
+            except ValueError as e:
+                raise ValueError(f"'{date}' provided in unsupported format. Must be YYYY-MM-DD. "\
+                                 f"Recieved {date_string}.") from e
+
+    # Check that, if both start_date and end_date were provided, that start_date comes before
+    # end_date
+    if qualifiers.get('end_date', False) and qualifiers.get('start_date', False):
+        start = datetime.strptime(qualifiers['start_date'], '%Y-%m-%d')
+        end = datetime.strptime(qualifiers['end_date'], '%Y-%m-%d')
+        if end < start:
+            raise ValueError(f"Provided end date ({qualifiers['end_date']}) comes before "\
+                             f"provided start date ({qualifiers['start_date']}). Start date "\
+                              "must be before or equal to end date.")
+
+    # Then, if both 'start_date' and 'end_date' were provided in addition to 'season', remove
+    # 'season' from the column_mapping and print the reason why.
+    if column_mapping.get('season', False) and qualifiers.get('start_date', False) and \
+        qualifiers.get('end_date', False):
+        print("Input values were provided for 'start_date', 'end_date', and 'season'. "\
+              "Disregarding the input for 'season' and returning all games between "\
+              f"{qualifiers['start_date']} and {qualifiers['end_date']}.")
+
+        del column_mapping['season']
+
+    return column_mapping

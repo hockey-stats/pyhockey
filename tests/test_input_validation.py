@@ -1,6 +1,7 @@
 import pytest
 
-from pyhockey.util.input_validation import check_input_values, check_input_type
+from pyhockey.util.input_validation import check_input_type, check_input_values, \
+validate_date_range
 
 
 def test_check_valid_inputs_singleton_success():
@@ -118,3 +119,84 @@ def test_check_input_type_list_failure():
 
     with pytest.raises(ValueError):
         check_input_type(test_inputs)
+
+
+def test_date_range_validation_start_and_end():
+    """
+    Test that validate_date_range() works as expected when both a start_date and end_date are
+    provided.
+    """
+    column_mapping = {
+        'season': 2025,
+        'situation': 'all'
+    }
+
+    qualifiers = {
+        'start_date': '2025-10-10',
+        'end_date': '2025-10-30'
+    }
+
+    expected = {
+        'situation': 'all'
+    }
+
+    result = validate_date_range(column_mapping=column_mapping, qualifiers=qualifiers)
+
+    assert result == expected
+   
+
+def test_date_range_validation_start_and_season():
+    """
+    Test that validate_date_range() works as expected when just a start_date is provided in
+    addition to a season.
+    """
+    column_mapping = {
+        'season': 2025,
+        'situation': 'all'
+    }
+
+    qualifiers = {
+        'start_date': '2025-10-10',
+    }
+
+    result = validate_date_range(column_mapping=column_mapping, qualifiers=qualifiers)
+
+    assert result == column_mapping
+
+
+def test_date_range_validation_raises_error_on_bad_date_format():
+    """
+    Test that validate_date_range() raises a ValueError when a date range in an incorrect
+    format is provided.
+    """
+    column_mapping = {
+        'season': 2025,
+        'situation': 'all'
+    }
+
+    qualifiers = {
+        'start_date': '10-10-2025',
+        'end_date': '2025-10-30'
+    }
+
+    with pytest.raises(ValueError):
+        validate_date_range(column_mapping=column_mapping, qualifiers=qualifiers)
+
+
+def test_date_range_validation_raises_error_on_end_before_start():
+    """
+    Test that validate_date_range() raises a ValueError when an end_date that comes before the
+    start_date is provided
+    """
+    column_mapping = {
+        'season': 2025,
+        'situation': 'all'
+    }
+
+    qualifiers = {
+        'start_date': '2025-10-30',
+        'end_date': '2024-10-30'
+    }
+
+    with pytest.raises(ValueError):
+        validate_date_range(column_mapping=column_mapping, qualifiers=qualifiers)
