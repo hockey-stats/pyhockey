@@ -70,6 +70,9 @@ def query_table(table: str,
     # Round all float values to 2 decimal places before returning
     results = results.with_columns(sc.float().round(2))
 
+    # Close the connection after query is complete
+    connection.close()
+
     return results
 
 
@@ -176,8 +179,10 @@ def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
             combined_info[col] = list(p_df[col])[0]
 
         # Then add the values which are sum totals for each season
-        for col in ['gamesPlayed', 'iceTime', 'points', 'goals', 'xGoalsFor', 'goalsFor',
-                    'xGoalsAgainst', 'goalsAgainst']:
+        for col in ['gamesPlayed', 'iceTime', 'points', 'goals', 'individualxGoals', 'xGoalsFor',
+                    'goalsFor', 'xGoalsAgainst', 'goalsAgainst', 'penaltiesTaken',
+                    'penaltiesDrawn', 'faceoffsWon', 'faceoffsLost', 'shotsBlocked',
+                    'oZoneShifts', 'dZoneShifts', 'neutralZoneShifts', 'flyShifts']:
             combined_info[col] = p_df[col].sum()
 
         # And finally compute rate metrics from each column containing a total metric value,
@@ -193,19 +198,58 @@ def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
         combined_info['averageIceTime'] = round(combined_info['iceTime'] /
                                                 combined_info['gamesPlayed'], 2)
 
-        player_dfs.append(pl.DataFrame(combined_info))
+        p = pl.DataFrame(combined_info)
+
+        player_dfs.append(p)
+
+
+    for i, p in enumerate(player_dfs[:]):
+        # Make sure dataframe has columns in a consistent order before concat
+        p = p[['playerID', 'season', 'name', 'team', 'position', 'situation', 'gamesPlayed',
+               'iceTime', 'points', 'goals', 'individualxGoals', 'xGoalsFor', 'xGoalsAgainst',
+               'goalsFor', 'goalsAgainst', 'xGoalsForPerHour', 'xGoalsAgainstPerHour',
+               'goalsForPerHour', 'goalsAgainstPerHour', 'pointsPerHour', 'goalsPerHour',
+               'averageIceTime', 'penaltiesTaken', 'penaltiesDrawn', 'faceoffsWon',
+               'faceoffsLost', 'shotsBlocked', 'oZoneShifts', 'dZoneShifts',
+               'neutralZoneShifts', 'flyShifts']]
+
+        # Also ensure columns are of consistent types before concat
+        p = p.cast(
+            {
+                'playerID': pl.Int32,
+                'gamesPlayed': pl.Int16,
+                'iceTime': pl.Float32,
+                'points': pl.Int16,
+                'goals': pl.Int16,
+                'individualxGoals': pl.Float64,
+                'goalsFor': pl.Int16,
+                'goalsAgainst': pl.Int16,
+                'xGoalsFor': pl.Float32,
+                'xGoalsAgainst': pl.Float32,
+                'pointsPerHour': pl.Float32,
+                'goalsPerHour': pl.Float32,
+                'goalsForPerHour': pl.Float32,
+                'goalsAgainstPerHour': pl.Float32,
+                'xGoalsForPerHour': pl.Float32,
+                'xGoalsAgainstPerHour': pl.Float32,
+                'averageIceTime': pl.Float32,
+                'penaltiesTaken': pl.Int16,
+                'penaltiesDrawn': pl.Int16,
+                'faceoffsWon': pl.Int16,
+                'faceoffsLost': pl.Int16,
+                'shotsBlocked': pl.Int16,
+                'oZoneShifts': pl.Int16,
+                'dZoneShifts': pl.Int16,
+                'neutralZoneShifts': pl.Int16,
+                'flyShifts': pl.Int16
+            }
+        )
+
+        player_dfs[i] = p
+        with pl.Config(tbl_cols=32):
+            print(player_dfs[i])
 
     final_df: pl.DataFrame = pl.concat(player_dfs)
-
-    final_df = final_df.cast(
-        {
-            'gamesPlayed': pl.Int16,
-            'points': pl.Int16,
-            'goals': pl.Int16,
-            'goalsFor': pl.Int16,
-            'goalsAgainst': pl.Int16,
-        }
-    )
 
     final_df = final_df.sort(by=['team', 'playerID'])
 

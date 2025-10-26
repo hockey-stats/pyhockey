@@ -10,7 +10,7 @@ def test_standard_skater_summary():
     result: pl.DataFrame = skater_summary(season=[2023, 2024], team=['TOR', 'MTL'],
                                             min_icetime=500)
 
-    assert result.shape == (79, 21)
+    assert result.shape == (79, 31)
 
 
 def test_combined_skater_summary():
@@ -21,4 +21,4 @@ def test_combined_skater_summary():
                                             min_icetime=500,
                                             combine_seasons=True)
 
-    assert result.shape == (53, 21)
+    assert result.shape == (53, 31)
