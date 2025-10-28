@@ -1,6 +1,6 @@
 import pytest
 
-from pyhockey.util.query_builder import construct_query
+from pyhockey.util.query_builder import construct_query, handle_names
 
 
 def test_construct_query_simple():
@@ -30,6 +30,7 @@ def test_construct_query_complex():
         'team': ['TOR', 'MTL', 'OTT'],
         'season': [2024, 2025],
         'situation': ['all', '5on5'],
+        'name': ['Stolarz', 'Sam Montembault']
     }
 
     qualifiers: dict[str] = {
@@ -44,6 +45,7 @@ def test_construct_query_complex():
                     "AND (team = 'TOR' OR team = 'MTL' OR team = 'OTT') "\
                     "AND (season = 2024 OR season = 2025) "\
                     "AND (situation = 'all' OR situation = '5on5') "\
+                    "AND (name LIKE '%Stolarz%' OR name LIKE '%Sam%Montembault%') "\
                     "ORDER BY team, season"
 
     assert result == expected
@@ -89,3 +91,23 @@ def test_construct_query_with_date_range():
                     "ORDER BY team, gameDate"
 
     assert result == expected
+
+
+def test_handle_names_singleton():
+    """
+    Test that handle_names works as expected when a single name is provided, either a full
+    name or just a last name.
+    """
+    condition: str = handle_names('Matthews')
+    assert condition == "name LIKE '%Matthews%'"
+
+    condition_b: str = handle_names('Auston Matthews')
+    assert condition_b == "name LIKE '%Auston%Matthews%'"
+
+
+def test_handle_names_list():
+    """
+    Test that handle_names works as expected when a list of names is provided.
+    """
+    condition: str = handle_names(['Matthews', 'William Nylander'])
+    assert condition == "(name LIKE '%Matthews%' OR name LIKE '%William%Nylander%')"

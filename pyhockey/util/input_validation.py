@@ -98,6 +98,10 @@ def check_input_values(column_mapping: dict[str]) -> bool:
 
     for column, input_value in column_mapping.items():
 
+        if not VALID_INPUT_VALUES.get(column, False):
+            # Some columns don't need to have their inputs validated (e.g. names)
+            continue
+
         valid_inputs: list[str | int] = VALID_INPUT_VALUES[column]
 
         # If input_value is a singleton check that it's in the list of valid inputs, but

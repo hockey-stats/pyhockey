@@ -67,8 +67,13 @@ def construct_query(table_name: str,
     for column_name, value in column_mapping.items():
         # The keys of the column_mapping dict will be strings corresponding to the column
         # names in the table, whereas the values will be filters applied to those columns.
+
+        # Names are handled slightly differently than other columns
+        if column_name == 'name':
+            condition: str = handle_names(value)
+
         # These values can be of multiple types, and can also potentially be a list of items.
-        if isinstance(value, list):
+        elif isinstance(value, list):
             if isinstance(value[0], str):
                 # Add single quotes to value if dealing with strings
                 condition: str = " OR ".join(f"{column_name} = '{v}'" for v in value)
@@ -100,3 +105,34 @@ def construct_query(table_name: str,
         query += order
 
     return query
+
+
+def handle_names(value: str | list[str]) -> str:
+    """
+    When names are provided to filter a table on, use a 'LIKE' comparison instead of '=' as well
+    as wildcards to try and cover as many provided inputs as possible. 
+    
+    E.g., if just a single word is given, assume it to be either a first or last name, and thus
+    the condition will be
+        name LIKE '%INPUT%', 
+    whereas if two or more words are given, the condition will look like
+        name LIKE '%INPUT_A%INPUT_B%'.
+
+    :param str value: The provided input(s) for the name to be filtered against.
+    :return str: _description_
+    """
+
+    # These values can be of multiple types, and can also potentially be a list of items.
+    if isinstance(value, list):
+        name_values = [f'%{"%".join(v.split())}%' for v in value]
+        condition: str = " OR ".join(f"name LIKE '{n}'" for n in name_values)
+
+        # Make sure the 'OR' conditions are bracketed
+        condition = f"({condition})"
+
+    # If we're dealing with a singleton and not a list...
+    else:
+        name_value = f'%{"%".join(value.split())}%'
+        condition: str = f"name LIKE '{name_value}'"
+
+    return condition
