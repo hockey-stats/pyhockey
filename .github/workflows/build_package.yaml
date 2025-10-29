@@ -30,6 +30,9 @@ jobs:
         run: |
           echo "MOTHERDUCK_READ_TOKEN = '$MOTHERDUCK_TOKEN'" > config.py;
           mv config.py pyhockey/util/;
+          ls -lrt;
+          ls -lrt pyhockey;
+          ls -lrt pyhockey/util;
 
       - name: Install dependencies
         run: uv sync
