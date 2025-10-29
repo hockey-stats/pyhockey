@@ -6,6 +6,7 @@ divided by game state.
 import polars as pl
 
 from pyhockey.util.query_table import query_table
+from pyhockey.util.data_disclaimer import print_data_disclaimer
 
 
 # Define custom type for inputs into our queries
@@ -16,7 +17,8 @@ def goalie_summary(season: int | list[int],
                    team: str | list[str] = 'ALL',
                    min_games_played: int = 0,
                    situation: str = 'all',
-                   combine_seasons: bool = False) -> pl.DataFrame:
+                   combine_seasons: bool = False,
+                 quiet: bool = False) -> pl.DataFrame:
     """
     Primary function for retrieving goalie-level season summaries. Given a season or list of
     seasons, return goalie data summaries for each of those seasons. 
@@ -30,6 +32,7 @@ def goalie_summary(season: int | list[int],
     :param str situation: One of 'all', '5on5', '4on5', '5on4', or 'other', defaults to 'all'
     :param bool combine_seasons: If True, and given multiple seasons, combine the results of each
                                  season into a single entry for each player, defaults to False
+    :param bool quiet: If set to True, don't print the data disclaimer, defaults to False
 
     :return pl.DataFrame: The resulting data in a polars DataFrame
     """
@@ -47,5 +50,8 @@ def goalie_summary(season: int | list[int],
     results: pl.DataFrame = query_table(table='goalies', column_mapping=column_mapping,
                                         qualifiers=qualifiers, combine_seasons=combine_seasons,
                                         order_by=['team', 'season'])
+
+    if not quiet:
+        print_data_disclaimer(source='MoneyPuck')
 
     return results

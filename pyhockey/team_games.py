@@ -4,6 +4,7 @@ Main module for returning game-by-game statistics for each team.
 import polars as pl
 
 from pyhockey.util.query_table import query_table
+from pyhockey.util.data_disclaimer import print_data_disclaimer
 
 
 # Define custom type for inputs into our queries
@@ -14,7 +15,8 @@ def team_games(season: int | list[int] | None = None,
                team: str | list[str] = 'ALL',
                start_date: str | None = None,
                end_date: str | None = None,
-               situation: str = 'all') -> pl.DataFrame:
+               situation: str = 'all',
+               quiet: bool = False) -> pl.DataFrame:
     """
     Primary function for returning game-by-game team statistics. Accepts one or multiple teams, one
     or multiple seasons, or alternatively, a start- and end-date for which to return game-by-game
@@ -30,6 +32,7 @@ def team_games(season: int | list[int] | None = None,
     :param str | None end_date: A date from which to return all games before and on that date, in
                                 YYYY-MM-DD format, defaults to None
     :param str situation: One of 'all', '5on5', '4on5', or '5on4', defaults to 'all'
+    :param bool quiet: If set to True, don't print the data disclaimer, defaults to False
     
     :raises ValueError: Raises a ValueError if incorrect date format is provided.
     
@@ -55,5 +58,8 @@ def team_games(season: int | list[int] | None = None,
 
     results: pl.DataFrame = query_table(table='team_games', column_mapping=column_mapping,
                                         qualifiers=qualifers, order_by=['team', 'gameDate'])
+
+    if not quiet:
+        print_data_disclaimer(source='MoneyPuck')
 
     return results

@@ -1,5 +1,6 @@
+
 """
-Main module for returning game-by-game statistics for each skater.
+Main module for returning game-by-game statistics for each goalie.
 """
 import polars as pl
 
@@ -11,7 +12,7 @@ from pyhockey.util.data_disclaimer import print_data_disclaimer
 type QueryValue = str | int | float | list[str] | list[int] | list[float]
 
 
-def skater_games(season: int | list[int] | None = None,
+def goalie_games(season: int | list[int] | None = None,
                  name: str | list[str] | None = None,
                  team: str | list[str] = 'ALL',
                  start_date: str | None = None,
@@ -19,8 +20,8 @@ def skater_games(season: int | list[int] | None = None,
                  situation: str = 'all',
                  quiet: bool = False) -> pl.DataFrame:
     """
-    Primary function for returning game-by-game skater statistics. Accepts one or multiple teams, 
-    one or multiple skater names, one or multiple seasons, or alternatively, a start- and end-date
+    Primary function for returning game-by-game goalie statistics. Accepts one or multiple teams, 
+    one or multiple goalie names, one or multiple seasons, or alternatively, a start- and end-date
     for which to return game-by-game metrics.
 
     :param int | list[int] | None season: Either one or a list of seasons for which to return all
@@ -61,7 +62,7 @@ def skater_games(season: int | list[int] | None = None,
         'situation': situation
     }
 
-    results: pl.DataFrame = query_table(table='skater_games', column_mapping=column_mapping,
+    results: pl.DataFrame = query_table(table='goalie_games', column_mapping=column_mapping,
                                         qualifiers=qualifers, order_by=['team', 'gameDate'])
 
     if not quiet:
