@@ -37,10 +37,6 @@ def team_summary(season: int | list[int],
         'situation': situation
     }
 
-    # If getting results for all team, no need to provide a team filter in the column mapping
-    if team == 'ALL':
-        del column_mapping['team']
-
     results: pl.DataFrame = query_table(table='teams', column_mapping=column_mapping,
                                         combine_seasons=combine_seasons,
                                         order_by=['team', 'season'])

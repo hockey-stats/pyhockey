@@ -12,6 +12,7 @@ type QueryValue = str | int | float | list[str] | list[int] | list[float]
 
 
 def skater_summary(season: int | list[int],
+                   name: str | list[str] | None = None,
                    team: str | list[str] = 'ALL',
                    min_icetime: int = 0,
                    situation: str = 'all',
@@ -20,10 +21,15 @@ def skater_summary(season: int | list[int],
     Primary function for retrieving skater-level season summaries. Given a season or list of
     seasons, return skater data summaries for each of those seasons. 
 
+    Can also provide a name or list of names to get only summaries for specific player(s).
+
     Can provide further filters via a team or list of teams, a minimum icetime cutoff, or
     a specific situation/game state.
 
     :param int | list[int] season: The (list of) season(s) for which to return data
+    :param str | list[str] | None name: Either one or a list of names for which to return stats. 
+                                        Can be a full name, partial name, or just first/last name.
+                                        Defaults to None.
     :param str | list[str] team: The (list of) team(s) for which to return data, defaults to 'ALL'
     :param int min_icetime: A minimum icetime (in minutes) cut-off to apply, defaults to 0
     :param str situation: One of 'all', '5on5', '4on5', '5on4', or 'other', defaults to 'all'
@@ -36,12 +42,9 @@ def skater_summary(season: int | list[int],
     column_mapping: dict[str, QueryValue] = {
         'season': season,
         'team': team,
+        'name': name,
         'situation': situation
     }
-
-    # If getting results for all team, no need to provide a team filter in the column mapping
-    if team == 'ALL':
-        del column_mapping['team']
 
     qualifiers: dict[str, str] = {
         'iceTime': f'>={min_icetime}'

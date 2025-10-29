@@ -23,7 +23,7 @@ VALID_SEASONS = list(range(2008, 2026))
 VALID_TEAMS = ['ANA', 'ARI', 'ATL', 'BOS', 'BUF', 'CAR', 'CBJ', 'CGY', 'CHI', 'COL', 'DAL', 'DET',
                'EDM', 'FLA', 'L.A', 'LAK', 'MIN', 'MTL', 'N.J', 'NJD', 'NSH', 'NYI', 'NYR', 'OTT',
                'PHI', 'PIT', 'S.J', 'SEA', 'SJS', 'STL', 'T.B', 'TBL', 'TOR', 'UTA', 'VAN', 'VGK',
-               'WPG', 'WSH',]
+               'WPG', 'WSH', 'ALL']
 
 VALID_INPUT_VALUES = {
     'season': VALID_SEASONS,
@@ -98,6 +98,10 @@ def check_input_values(column_mapping: dict[str]) -> bool:
 
     for column, input_value in column_mapping.items():
 
+        # Default value for most columns is None, so skip those
+        if input_value is None:
+            continue
+
         if not VALID_INPUT_VALUES.get(column, False):
             # Some columns don't need to have their inputs validated (e.g. names)
             continue
@@ -133,6 +137,11 @@ def check_input_type(column_mapping: dict[str]) -> bool:
     """
 
     for column_name, value in column_mapping.items():
+
+        # Default value for most columns is None, so skip those
+        if value is None:
+            continue
+
         desired_type = COLUMN_SCHEMA[column_name]
         # First make sure values that were supplied are the correct types.
         if not isinstance(value, desired_type):

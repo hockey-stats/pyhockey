@@ -40,10 +40,6 @@ def goalie_summary(season: int | list[int],
         'situation': situation
     }
 
-    # If getting results for all team, no need to provide a team filter in the column mapping
-    if team == 'ALL':
-        del column_mapping['team']
-
     qualifiers: dict[str, str] = {
         'gamesPlayed': f'>={min_games_played}'
     }

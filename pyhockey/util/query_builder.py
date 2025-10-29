@@ -68,6 +68,14 @@ def construct_query(table_name: str,
         # The keys of the column_mapping dict will be strings corresponding to the column
         # names in the table, whereas the values will be filters applied to those columns.
 
+        # Default value for most columns is None, so skip those
+        if value is None:
+            continue
+
+        # Also skip the 'team' input if the value is 'ALL', since no filter is needed
+        if column_name == 'team' and value == 'ALL':
+            continue
+
         # Names are handled slightly differently than other columns
         if column_name == 'name':
             condition: str = handle_names(value)

@@ -53,11 +53,6 @@ def team_games(season: int | list[int] | None = None,
         'situation': situation
     }
 
-    # Remove inputs from the column_mapping if they're not used
-    for key, value in zip(['season', 'team'], [season, team]):
-        if value is None or (key == 'team' and value == 'ALL'):
-            del column_mapping[key]
-
     results: pl.DataFrame = query_table(table='team_games', column_mapping=column_mapping,
                                         qualifiers=qualifers, order_by=['team', 'gameDate'])
 
