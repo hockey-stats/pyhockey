@@ -25,10 +25,16 @@ VALID_TEAMS = ['ANA', 'ARI', 'ATL', 'BOS', 'BUF', 'CAR', 'CBJ', 'CGY', 'CHI', 'C
                'PHI', 'PIT', 'S.J', 'SEA', 'SJS', 'STL', 'T.B', 'TBL', 'TOR', 'UTA', 'VAN', 'VGK',
                'WPG', 'WSH', 'ALL']
 
-VALID_INPUT_VALUES = {
+VALID_INPUT_VALUES_MONEYPUCK = {
     'season': VALID_SEASONS,
     'team': VALID_TEAMS,
     'situation': VALID_SITUATIONS
+}
+
+VALID_INPUT_VALUES_NST = {
+    'season': VALID_SEASONS,
+    'team': VALID_TEAMS,
+    'situation': ['ev', 'pp', 'pk', 'all']
 }
 
 # A mapping of column names in the database to the expected types of the values in those columns
@@ -79,7 +85,7 @@ COLUMN_SCHEMA = {
 ### END CONSTANTS #################################################################################
 
 
-def check_input_values(column_mapping: dict[str]) -> bool:
+def check_input_values(column_mapping: dict[str], table: str) -> bool:
     """
     Function to determine if the input values provided by a user are valid in the context of the
     tables being queried, e.g. make sure whatever season value is provided fits within the range
@@ -89,12 +95,20 @@ def check_input_values(column_mapping: dict[str]) -> bool:
     valid inputs are.
 
     :param dict[str] column_mapping: A mapping of the columns to check with their provided inputs
+    :param str table: Name of the table being queried, as depending on the source, some expect
+                      different values.
 
     :raises ValueError: This function will raise a ValueError, ending the program, if an invalid
                         value is provided.
 
     :return bool: Returns True if no ValueError is raised
     """
+    print(table)
+
+    if table in {'skaters', 'goalies', 'teams', 'team_games'}:
+        value_map = VALID_INPUT_VALUES_MONEYPUCK
+    else:
+        value_map = VALID_INPUT_VALUES_NST
 
     for column, input_value in column_mapping.items():
 
@@ -102,11 +116,12 @@ def check_input_values(column_mapping: dict[str]) -> bool:
         if input_value is None:
             continue
 
-        if not VALID_INPUT_VALUES.get(column, False):
+        if not value_map.get(column, False):
             # Some columns don't need to have their inputs validated (e.g. names)
             continue
 
-        valid_inputs: list[str | int] = VALID_INPUT_VALUES[column]
+        valid_inputs: list[str | int] = value_map[column]
+        print(valid_inputs)
 
         # If input_value is a singleton check that it's in the list of valid inputs, but
         # if input_value is a list check that it is a subset

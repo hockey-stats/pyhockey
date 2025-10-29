@@ -68,7 +68,7 @@ def query_table(table: str,
         results = func(results)
 
     # Round all float values to 2 decimal places before returning
-    results = results.with_columns(sc.float().round(2))
+    results = results.with_columns(sc.float().cast(pl.Float64).round(2))
 
     # Close the connection after query is complete
     connection.close()
@@ -132,8 +132,8 @@ def combine_team_seasons(df: pl.DataFrame) -> pl.DataFrame:
             'gamesPlayed': pl.Int16,
             'goalsFor': pl.Int16,
             'goalsAgainst': pl.Int16,
-            'xGoalsFor': pl.Float32,
-            'xGoalsAgainst': pl.Float32,
+            'xGoalsFor': pl.Float64,
+            'xGoalsAgainst': pl.Float64,
         }
     )
 
@@ -218,21 +218,21 @@ def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
             {
                 'playerID': pl.Int32,
                 'gamesPlayed': pl.Int16,
-                'iceTime': pl.Float32,
+                'iceTime': pl.Float64,
                 'points': pl.Int16,
                 'goals': pl.Int16,
                 'individualxGoals': pl.Float64,
                 'goalsFor': pl.Int16,
                 'goalsAgainst': pl.Int16,
-                'xGoalsFor': pl.Float32,
-                'xGoalsAgainst': pl.Float32,
-                'pointsPerHour': pl.Float32,
-                'goalsPerHour': pl.Float32,
-                'goalsForPerHour': pl.Float32,
-                'goalsAgainstPerHour': pl.Float32,
-                'xGoalsForPerHour': pl.Float32,
-                'xGoalsAgainstPerHour': pl.Float32,
-                'averageIceTime': pl.Float32,
+                'xGoalsFor': pl.Float64,
+                'xGoalsAgainst': pl.Float64,
+                'pointsPerHour': pl.Float64,
+                'goalsPerHour': pl.Float64,
+                'goalsForPerHour': pl.Float64,
+                'goalsAgainstPerHour': pl.Float64,
+                'xGoalsForPerHour': pl.Float64,
+                'xGoalsAgainstPerHour': pl.Float64,
+                'averageIceTime': pl.Float64,
                 'penaltiesTaken': pl.Int16,
                 'penaltiesDrawn': pl.Int16,
                 'faceoffsWon': pl.Int16,
@@ -310,13 +310,13 @@ def combine_goalie_seasons(df: pl.DataFrame) -> pl.DataFrame:
             'gamesPlayed': pl.Int16,
             'iceTime': pl.Int16,
             'goals': pl.Int16,
-            'xGoals': pl.Float32,
+            'xGoals': pl.Float64,
             'lowDangerShots': pl.Int16,
             'mediumDangerShots': pl.Int16,
             'highDangerShots': pl.Int16,
-            'lowDangerxGoals': pl.Float32,
-            'mediumDangerxGoals': pl.Float32,
-            'highDangerxGoals': pl.Float32,
+            'lowDangerxGoals': pl.Float64,
+            'mediumDangerxGoals': pl.Float64,
+            'highDangerxGoals': pl.Float64,
             'lowDangerGoals': pl.Int16,
             'mediumDangerGoals': pl.Int16,
             'highDangerGoals': pl.Int16,

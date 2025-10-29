@@ -38,7 +38,7 @@ def construct_query(table_name: str,
 
     # This condition will raise an error if mis-matched types or invalid values were provided
     if check_input_type(column_mapping=column_mapping) and \
-       check_input_values(column_mapping=column_mapping):
+       check_input_values(column_mapping=column_mapping, table=table_name):
         pass
 
     query: str = f"SELECT * FROM {table_name} WHERE "
