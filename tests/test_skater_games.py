@@ -10,5 +10,5 @@ def test_standard_skater_games():
 
     result: pl.DataFrame = skater_games(name=['Nylander', 'Matthews'], start_date='2025-10-01',
                                         end_date='2025-10-25')
-    
+
     assert result.shape == (17, 22)
