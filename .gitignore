@@ -10,3 +10,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Config
+pyhockey/util/config.py
