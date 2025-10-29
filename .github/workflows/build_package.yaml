@@ -24,16 +24,6 @@ jobs:
       - name: Install Python 3.12
         run: uv python install 3.12
 
-      - name: Create config.py
-        env:
-          MOTHERDUCK_READ_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN_READ_ONLY }}
-        run: |
-          echo "MOTHERDUCK_READ_TOKEN = '$MOTHERDUCK_TOKEN'" > config.py;
-          mv config.py pyhockey/util/;
-          ls -lrt;
-          ls -lrt pyhockey;
-          ls -lrt pyhockey/util;
-
       - name: Install dependencies
         run: uv sync
 
