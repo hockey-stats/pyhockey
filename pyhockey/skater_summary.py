@@ -19,7 +19,8 @@ def skater_summary(season: int | list[int],
                    situation: str = 'all',
                    combine_seasons: bool = False,
                    quiet: bool = False) -> pl.DataFrame:
-    """
+    """ Return skater-level season summary data
+
     Primary function for retrieving skater-level season summaries. Given a season or list of
     seasons, return skater data summaries for each of those seasons. 
 
@@ -28,18 +29,29 @@ def skater_summary(season: int | list[int],
     Can provide further filters via a team or list of teams, a minimum icetime cutoff, or
     a specific situation/game state.
 
-    :param int | list[int] season: The (list of) season(s) for which to return data
-    :param str | list[str] | None name: Either one or a list of names for which to return stats. 
-                                        Can be a full name, partial name, or just first/last name.
-                                        Defaults to None.
-    :param str | list[str] team: The (list of) team(s) for which to return data, defaults to 'ALL'
-    :param int min_icetime: A minimum icetime (in minutes) cut-off to apply, defaults to 0
-    :param str situation: One of 'all', '5on5', '4on5', '5on4', or 'other', defaults to 'all'
-    :param bool combine_seasons: If True, and given multiple seasons, combine the results of each
-                                 season into a single entry for each player, defaults to False
-    :param bool quiet: If set to True, don't print the data disclaimer, defaults to False
+    Args:
+        season: 
+            The (list of) season(s) for which to return data
+        name: 
+            Either one or a list of names for which to return stats. Can be a full name, partial
+            name, or just first/last name, defaults to None.
+        team: 
+            The (list of) team(s) for which to return data, defaults to 'ALL'
+        min_icetime: 
+            A minimum icetime (in minutes) cut-off to apply, defaults to 0
+        situation: 
+            One of 'all', '5on5', '4on5', '5on4', or 'other', defaults to 'all'
+        combine_seasons: 
+            If True, and given multiple seasons, combine the results of each season into a single
+            entry for each player, defaults to False
+        quiet: 
+            If set to True, don't print the data disclaimer, defaults to False
 
-    :return pl.DataFrame: The resulting data in a polars DataFrame
+    Returns:
+        A polars DataFrame containing all of the requested data.
+
+    Raises:
+        ValueError: An input of either incorrect value or type was provided.
     """
 
     column_mapping: dict[str, QueryValue] = {

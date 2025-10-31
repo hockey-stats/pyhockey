@@ -21,25 +21,31 @@ def query_table(table: str,
                 qualifiers: dict[str, str] | None = None,
                 order_by: list[str] | None = None,
                 combine_seasons: bool = False) -> pl.DataFrame:
-    """
-    Function to handle specifics of querying a table, given the desired table and parameters.
+    """Function to handle specifics of querying a table, given the desired table and parameters.
 
     This function will handle calling the query constructer, retrieving the database connection,
     querying the database, combining season values if desired, and rounding the values in the
     results before returning them.
 
-    :param str table: Name of the table to be querying.
-    :param dict[str, QueryValue] column_mapping: A dict mapping column names in the table to values
-                                                 they need to be evaluated against. Multiple values
-                                                 can be provided in a list and all will be combined
-                                                 in an 'OR' statement.
-    :param dict[str, str] qualifiers: A dict mapping certain column names to evaluations which will
-                                      be applied to the query, e.g. '<' or '>' conditions, defaults 
-                                      to None.
-    :param list[str] | None order_by: A list of strings corresponding to column names that the 
-                                     results will be sorted by, defaults to None.
-    :param bool combine_seasons: , defaults to False
-    :return pl.DataFrame: _description_
+    Args:
+        table: 
+            Name of the table to be querying.
+        column_mapping: 
+            A dict mapping column names in the table to values they need to be evaluated against. 
+            Multiple values can be provided in a list and all will be combined in an 'OR'
+            statement.
+        qualifiers: 
+            A dict mapping certain column names to evaluations which will be applied to the query,
+            e.g. '<' or '>' conditions, defaults to None.
+        order_by: 
+            A list of strings corresponding to column names that the results will be sorted by, 
+            defaults to None.
+        combine_seasons: 
+            If set to True, call a function to combine multi-season results into a single season,
+            defaults to False
+
+    Returns:
+        A polars DataFrame containing the results of the query.
     """
 
     query: str = construct_query(table_name=table, column_mapping=column_mapping,
@@ -77,16 +83,20 @@ def query_table(table: str,
 
 
 def combine_team_seasons(df: pl.DataFrame) -> pl.DataFrame:
-    """
+    """ Combines team-level multi-season summaries into one summary
+
     Called when a user requests multiple seasons worth of data and wants to have them combined
     into a single row for each team.
 
     Goes through the data provided by the query and combines the data for each team-season into
     one row, returning the resulting DataFrame.
 
-    :param pl.DataFrame df: The raw results of the query containing rows for each team-season
+    Args:
+        df: 
+            The raw results of the query containing rows for each team-season
 
-    :return pl.DataFrame: The output DataFrame with all team-seasons combined into one row.
+    Returns:
+        The output DataFrame with all team-seasons combined into one row.
     """
     # This list will contain DFs for each individual player, to be concatenated at the end
     team_dfs: list[pl.DataFrame] = []
@@ -141,16 +151,20 @@ def combine_team_seasons(df: pl.DataFrame) -> pl.DataFrame:
 
 
 def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
-    """
+    """ Combines skater-level multi-season summaries into one summary per skater
+
     Called when a user requests multiple seasons worth of data and wants to have them combined
     into a single row for each skater.
 
     Goes through the data provided by the query and combines the data for each player-season into
     one row, returning the resulting DataFrame.
 
-    :param pl.DataFrame df: The raw results of the query containing rows for each player-season
+    Args:
+        df: 
+            The raw results of the query containing rows for each player-season
 
-    :return pl.DataFrame: The output DataFrame with all player-seasons combined into one row.
+    Returns:
+        The output DataFrame with all player-seasons combined into one row.
     """
     # This list will contain DFs for each individual player, to be concatenated at the end
     player_dfs: list[pl.DataFrame] = []
@@ -257,16 +271,20 @@ def combine_skater_seasons(df: pl.DataFrame) -> pl.DataFrame:
 
 
 def combine_goalie_seasons(df: pl.DataFrame) -> pl.DataFrame:
-    """
+    """ Combines multi-season goalie summaries into one summary per goalie.
+
     Called when a user requests multiple seasons worth of data and wants to have them combined
     into a single row for each goalie.
 
     Goes through the data provided by the query and combines the data for each player-season into
     one row, returning the resulting DataFrame.
 
-    :param pl.DataFrame df: The raw results of the query containing rows for each player-season
+    Args:    
+        df: 
+            The raw results of the query containing rows for each player-season
 
-    :return pl.DataFrame: The output DataFrame with all player-seasons combined into one row.
+    Returns:
+        The output DataFrame with all player-seasons combined into one row.
     """
     # This list will contain DFs for each individual player, to be concatenated at the end
     player_dfs: list[pl.DataFrame] = []

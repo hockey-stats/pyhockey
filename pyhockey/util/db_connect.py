@@ -14,14 +14,15 @@ from pyhockey.util.config import MOTHERDUCK_READ_TOKEN
 
 
 def create_connection(db_name: str = 'md:') -> duckdb.DuckDBPyConnection:
-    """
-    Creates the connection object to the database.
+    """ Creates the connection object to the database.
 
-    :param _type_ db_name: Name of the database to connect to, defaults to 'md:' which uses
-                           the authorization token (which is set as an env var) to auto-
-                           resolve the database name.
+    Args:
+        db_name: 
+            Name of the database to connect to, defaults to 'md:' which uses the authorization
+            token (which is set as an env var) to auto-resolve the database name.
 
-    :return duckdb.DuckDBPyConnection: The connection object which we can use to query the db.
+    Returns:
+        The connection object which we can use to query the db.
     """
 
     # MotherDuck uses the MOTHERDUCK_TOKEN env var to authorize read-only access to the db
