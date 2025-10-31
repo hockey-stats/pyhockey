@@ -1,6 +1,6 @@
 [project]
 name = "pyhockey"
-version = "0.1.0"
+version = "0.1.7"
 description = "Library for easy querying of advanced NHL statistics."
 readme = "README.md"
 requires-python = ">=3.12"
