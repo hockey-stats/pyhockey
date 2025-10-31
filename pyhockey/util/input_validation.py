@@ -86,7 +86,8 @@ COLUMN_SCHEMA = {
 
 
 def check_input_values(column_mapping: dict[str], table: str) -> bool:
-    """
+    """ Checks that provided inputs use valid values.
+
     Function to determine if the input values provided by a user are valid in the context of the
     tables being queried, e.g. make sure whatever season value is provided fits within the range
     of seasons which have available data.
@@ -94,16 +95,19 @@ def check_input_values(column_mapping: dict[str], table: str) -> bool:
     If inputs are found to contain any invalid values, raise a ValueError with details on what the
     valid inputs are.
 
-    :param dict[str] column_mapping: A mapping of the columns to check with their provided inputs
-    :param str table: Name of the table being queried, as depending on the source, some expect
-                      different values.
+    Args:
+        column_mapping: 
+            A mapping of the columns to check with their provided inputs
+        table: 
+            Name of the table being queried, as depending on the source, some expect different
+            values.
 
-    :raises ValueError: This function will raise a ValueError, ending the program, if an invalid
-                        value is provided.
+    Returns:
+        Returns True if no ValueError is raised
 
-    :return bool: Returns True if no ValueError is raised
+    Raises:
+        ValueError: An input of either incorrect value or type was provided.
     """
-    print(table)
 
     if table in {'skaters', 'goalies', 'teams', 'team_games'}:
         value_map = VALID_INPUT_VALUES_MONEYPUCK
@@ -121,7 +125,6 @@ def check_input_values(column_mapping: dict[str], table: str) -> bool:
             continue
 
         valid_inputs: list[str | int] = value_map[column]
-        print(valid_inputs)
 
         # If input_value is a singleton check that it's in the list of valid inputs, but
         # if input_value is a list check that it is a subset
@@ -139,16 +142,23 @@ def check_input_values(column_mapping: dict[str], table: str) -> bool:
 
 
 def check_input_type(column_mapping: dict[str]) -> bool:
-    """
+    """ Checks that provided inputs are of the valid type.
+
     Validates the types provided to the primary functions to make sure they align with
     database expectations when building the query.
 
-    :param dict[str] column_mapping: A mapping of the columns to check with their provided inputs
+    Args:
+        column_mapping: 
+            A mapping of the columns to check with their provided inputs
 
-    :raises ValueError: This function will raise a ValueError, ending the program, if a mismatched
-                        type for the value is provided.
+    Returns:
+        If no error is raised, the function will return True.
 
-    :return bool: If no error is raised, the function will return True.
+    Raises:
+        ValueError: 
+            This function will raise a ValueError, ending the program, if a mismatched type for
+            the value is provided.
+
     """
 
     for column_name, value in column_mapping.items():
@@ -174,18 +184,25 @@ def check_input_type(column_mapping: dict[str]) -> bool:
 
 def validate_date_range(column_mapping: dict[str, QueryValue],
                         qualifiers: dict[str, str]) -> dict[str, QueryValue]:
-    """
+    """ Checks that date inputs are valid.
+
     Function to check any date inputs (e.g. 'start_date', 'end_date') where given in the
     expected format, and to make sure there are no conflicts between these inputs and the
     'season' input.
 
-    :param dict[str, QueryValue] column_mapping: The column mapping provided for the query.
-    :param dict[str, str] qualifiers: The qualifiers provided for the query.
+    Args:
+        column_mapping: 
+            The column mapping provided for the query.
+        qualifiers: 
+            The qualifiers provided for the query.
 
-    :raises ValueError: Raises a ValueError if a date value was provided in a format that
-                        isn't YYYY-MM-DD, or if end_date is not after start_date.
+    Returns:
+        An updated version of the column mapping.
 
-    :return dict[str, QueryValue]: An updated version of the column mapping.
+    Raises:
+        Raises a ValueError if a date value was provided in a format that isn't YYYY-MM-DD,
+        or if end_date is not after start_date.
+
     """
 
     # First checks that both 'start_date' and 'end_date', if provided, match the YYYY-MM-DD format

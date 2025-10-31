@@ -18,22 +18,26 @@ def construct_query(table_name: str,
                     column_mapping: dict[str, QueryValue],
                     qualifiers: dict[str, str] | None = None,
                     order_by: list[str] | None = None) -> str:
-    """
-    Method that takes parameters passed into the primary functions and constructs an
+    """ Constructs the query string to request data from database.
+
+    Function that takes parameters passed into the primary functions and constructs an
     SQL query that can be used to query the data.
 
-    :param str table_name: The name of the table being queried.
-    :param dict[str, QueryValue] column_mapping: A dict mapping column names in the table to values
-                                                 they need to be evaluated against. Multiple values
-                                                 can be provided in a list and all will be combined
-                                                 in an 'OR' statement.
-    :param dict[str, str] qualifiers: A dict mapping certain column names to evaluations which will
-                                      be applied to the query, e.g. '<' or '>' conditions, defaults
-                                      to None.
-    :param list[str] order_by: A list of strings corresponding to column names that the results
-                               will be sorted by.
+    Args:
+        table_name: 
+            The name of the table being queried.
+        column_mapping: 
+            A dict mapping column names in the table to values they need to be evaluated against. 
+            Multiple values can be provided in a list and all will be combined in an 'OR'
+            statement.
+        qualifiers: 
+            A dict mapping certain column names to evaluations which will be applied to the query,
+            e.g. '<' or '>' conditions, defaults to None.
+        order_by: 
+            A list of strings corresponding to column names that the results will be sorted by.
 
-    :return str: The full query provided as a string.
+    Returns:
+        The full query provided as a string.
     """
 
     # This condition will raise an error if mis-matched types or invalid values were provided
@@ -116,7 +120,8 @@ def construct_query(table_name: str,
 
 
 def handle_names(value: str | list[str]) -> str:
-    """
+    """ Function to handle conditions on player names.
+
     When names are provided to filter a table on, use a 'LIKE' comparison instead of '=' as well
     as wildcards to try and cover as many provided inputs as possible. 
     
@@ -126,8 +131,12 @@ def handle_names(value: str | list[str]) -> str:
     whereas if two or more words are given, the condition will look like
         name LIKE '%INPUT_A%INPUT_B%'.
 
-    :param str value: The provided input(s) for the name to be filtered against.
-    :return str: _description_
+    Args:
+        value: 
+            The provided input(s) for the name to be filtered against.
+
+    Returns:
+        The properly formatted condition for comparing names.
     """
 
     # These values can be of multiple types, and can also potentially be a list of items.
