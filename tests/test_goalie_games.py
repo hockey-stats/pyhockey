@@ -11,4 +11,4 @@ def test_standard_goalie_games():
     result: pl.DataFrame = goalie_games(name=['Stolarz', 'Shesterkin'], start_date='2025-10-01',
                                         end_date='2025-10-25')
 
-    assert result.shape == (14, 10)
+    assert result.shape == (56, 10)

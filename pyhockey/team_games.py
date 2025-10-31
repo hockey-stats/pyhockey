@@ -15,7 +15,7 @@ def team_games(season: int | list[int] | None = None,
                team: str | list[str] = 'ALL',
                start_date: str | None = None,
                end_date: str | None = None,
-               situation: str = 'all',
+               situation: str | None = None,
                quiet: bool = False) -> pl.DataFrame:
     """ Return team-level game-by-game statistics
 
@@ -37,7 +37,8 @@ def team_games(season: int | list[int] | None = None,
             A date from which to return all games before and on that date, in YYYY-MM-DD format,
             defaults to None
         situation: 
-            One of 'all', '5on5', '4on5', or '5on4', defaults to 'all'
+            Either None (so return everything), or one of 'all', '5on5', '4on5', or '5on4',
+            defaults to None
         quiet: 
             If set to True, don't print the data disclaimer, defaults to False
     

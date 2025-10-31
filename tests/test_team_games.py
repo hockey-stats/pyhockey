@@ -10,4 +10,4 @@ def test_standard_team_games():
     result: pl.DataFrame = team_games(team='TOR', start_date='2024-10-01',
                                       end_date='2025-01-23')
 
-    assert result.shape == (49, 15)
+    assert result.shape == (245, 15)

@@ -14,7 +14,7 @@ def test_check_valid_inputs_singleton_success():
         'situation': '5on5'
     }
 
-    result: bool = check_input_values(test_inputs)
+    result: bool = check_input_values(test_inputs, table='skaters')
 
     assert result
 
@@ -29,7 +29,7 @@ def test_check_valid_inputs_list_success():
         'situation': '5on5'
     }
 
-    result: bool = check_input_values(test_inputs)
+    result: bool = check_input_values(test_inputs, table='skaters')
 
     assert result
 
@@ -45,7 +45,7 @@ def test_check_valid_inputs_singleton_failure():
     }
 
     with pytest.raises(ValueError):
-        check_input_values(test_inputs)
+        check_input_values(test_inputs, table='skaters')
 
 
 def test_check_valid_inputs_list_failure():
@@ -59,7 +59,7 @@ def test_check_valid_inputs_list_failure():
     }
 
     with pytest.raises(ValueError):
-        check_input_values(test_inputs)
+        check_input_values(test_inputs, table='skaters')
 
 
 def test_check_input_type_singleton_success():
@@ -143,7 +143,7 @@ def test_date_range_validation_start_and_end():
     result = validate_date_range(column_mapping=column_mapping, qualifiers=qualifiers)
 
     assert result == expected
-   
+
 
 def test_date_range_validation_start_and_season():
     """
