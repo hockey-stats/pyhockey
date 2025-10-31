@@ -19,7 +19,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install pdocs
-        run: pip install pdocs
+        run: pip install pdoc
 
       - name: Generate HTML pages
         run: pdoc --html pyhockey
