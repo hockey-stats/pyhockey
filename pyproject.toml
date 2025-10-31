@@ -11,6 +11,7 @@ dependencies = [
     "pyarrow>=21.0.0",
     "numpy>=1.26.0,<2",
     "pandas>=2.1.0"
+    "pdoc>=16.0.0"
 ]
 authors = [
     {name = "Sohraub Pazuki", email = "sohraubpazuki@gmail.com"},
