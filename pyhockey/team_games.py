@@ -24,6 +24,7 @@ def team_games(season: int | list[int] | None = None,
     metrics.
 
     Args:
+
         season: 
             Either one or a list of seasons for which to return all games. Disregarded if both
             start_date and end_date are also provided, defaults to None
@@ -41,9 +42,11 @@ def team_games(season: int | list[int] | None = None,
             If set to True, don't print the data disclaimer, defaults to False
     
     Returns:
+
         A polars DataFrame containing all of the requested data.
 
     Raises:
+    
         ValueError: An input of either incorrect value or type was provided.
     """
 

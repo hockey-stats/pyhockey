@@ -24,6 +24,7 @@ def construct_query(table_name: str,
     SQL query that can be used to query the data.
 
     Args:
+    
         table_name: 
             The name of the table being queried.
         column_mapping: 
@@ -37,6 +38,7 @@ def construct_query(table_name: str,
             A list of strings corresponding to column names that the results will be sorted by.
 
     Returns:
+
         The full query provided as a string.
     """
 
@@ -132,10 +134,12 @@ def handle_names(value: str | list[str]) -> str:
         name LIKE '%INPUT_A%INPUT_B%'.
 
     Args:
+
         value: 
             The provided input(s) for the name to be filtered against.
 
     Returns:
+
         The properly formatted condition for comparing names.
     """
 

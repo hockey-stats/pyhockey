@@ -22,7 +22,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Generate HTML pages
-        run: pdoc -o docs/ pyhockey
+        run: |
+          pdoc -o docs/ pyhockey;
+          rm -r docs/pyhockey/util;
+          rm docs/pyhockey/util.html
     
       - uses: actions/upload-pages-artifact@v4
         with:

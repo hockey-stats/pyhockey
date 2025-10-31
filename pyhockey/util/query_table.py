@@ -28,6 +28,7 @@ def query_table(table: str,
     results before returning them.
 
     Args:
+
         table: 
             Name of the table to be querying.
         column_mapping: 
@@ -45,6 +46,7 @@ def query_table(table: str,
             defaults to False
 
     Returns:
+    
         A polars DataFrame containing the results of the query.
     """
 

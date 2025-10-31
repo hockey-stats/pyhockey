@@ -96,6 +96,7 @@ def check_input_values(column_mapping: dict[str], table: str) -> bool:
     valid inputs are.
 
     Args:
+
         column_mapping: 
             A mapping of the columns to check with their provided inputs
         table: 
@@ -103,9 +104,11 @@ def check_input_values(column_mapping: dict[str], table: str) -> bool:
             values.
 
     Returns:
+
         Returns True if no ValueError is raised
 
     Raises:
+
         ValueError: An input of either incorrect value or type was provided.
     """
 
@@ -148,13 +151,16 @@ def check_input_type(column_mapping: dict[str]) -> bool:
     database expectations when building the query.
 
     Args:
+
         column_mapping: 
             A mapping of the columns to check with their provided inputs
 
     Returns:
+
         If no error is raised, the function will return True.
 
     Raises:
+
         ValueError: 
             This function will raise a ValueError, ending the program, if a mismatched type for
             the value is provided.
@@ -191,15 +197,18 @@ def validate_date_range(column_mapping: dict[str, QueryValue],
     'season' input.
 
     Args:
+
         column_mapping: 
             The column mapping provided for the query.
         qualifiers: 
             The qualifiers provided for the query.
 
     Returns:
+
         An updated version of the column mapping.
 
     Raises:
+    
         Raises a ValueError if a date value was provided in a format that isn't YYYY-MM-DD,
         or if end_date is not after start_date.
 

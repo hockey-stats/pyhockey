@@ -7,10 +7,12 @@ def print_data_disclaimer(source: str) -> None:
     """ Prints a simple data disclaimer depending on the source of the data.
 
     Args:
+    
         source: 
             Name of the data source, ATM either MoneyPuck or NaturalStatTrick
 
     Returns:
+
         Nothing, just prints a line.
     """
 

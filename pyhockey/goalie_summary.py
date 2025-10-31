@@ -28,6 +28,7 @@ def goalie_summary(season: int | list[int],
     a specific situation/game state.
 
     Args:
+
         season: 
             The (list of) season(s) for which to return data
         team: 
@@ -43,9 +44,11 @@ def goalie_summary(season: int | list[int],
             If set to True, don't print the data disclaimer, defaults to False
 
     Returns:
+
         A polars DataFrame containing all of the requested data.
         
     Raises:
+    
         ValueError: An input of either incorrect value or type was provided.
     """
 
