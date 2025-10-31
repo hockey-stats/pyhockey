@@ -22,11 +22,11 @@ jobs:
         run: pip install pdoc
 
       - name: Generate HTML pages
-        run: pdoc --html pyhockey
+        run: pdoc -o docs/ pyhockey
     
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: html/
+          path: docs/
 
   deploy:
     needs: build
