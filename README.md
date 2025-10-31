@@ -2,6 +2,8 @@
 
 Tool for querying advanced NHL data provided by MoneyPuck.com and NaturalStatTrick.com
 
+**API documentation available [here.](https://hockey-stats.github.io/pyhockey/pyhockey.html)**
+
 ## Overview
 
 A straightforward library that uses DuckDB and Polars to query a seperately-maintained database
