@@ -25,7 +25,9 @@ jobs:
         run: uv python install 3.12
 
       - name: Install dependencies
-        run: uv sync
+        run: |
+          uv sync;
+          cat pyproject.toml
 
       - name: Run tests
         run: uv run python -m pytest
