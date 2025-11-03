@@ -32,7 +32,7 @@ VALID_INPUT_VALUES_MONEYPUCK = {
 }
 
 VALID_INPUT_VALUES_NST = {
-    'season': VALID_SEASONS,
+    'season': [2024, 2025],
     'team': VALID_TEAMS,
     'situation': ['ev', 'pp', 'pk', 'all']
 }

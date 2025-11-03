@@ -160,7 +160,8 @@ shape: (33, 14)
 
 In addition to season summaries, this library also makes available game-by-game statistics at the skater-, goalie-, or team-level.
 
-**DISCLAIMER**: Game-by-game data for skaters and goalies is currently only available for the 2025 season. Scraping of this data for previous seasons is currently in progress, but it is time-consuming.
+**DISCLAIMER**: Game-by-game data for skaters and goalies is currently only available for the 2024 and 2025 seasons. As of November 2025, the data source I use
+does not maintain this data consistently for any of the previous seasons.
 
 To get game-by-game stats for specific skaters in a specified date range:
 ```python
