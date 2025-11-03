@@ -1,6 +1,7 @@
 name: "Build and Publish to PyPi"
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - v*
