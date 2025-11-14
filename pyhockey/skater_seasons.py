@@ -1,6 +1,5 @@
 """
-Module for handling calls to the 'goalies' table, which holds season summaries for each goalie,
-divided by game state.
+Main module for returning season summaries for skaters.
 """
 
 import polars as pl
@@ -13,24 +12,30 @@ from pyhockey.util.data_disclaimer import print_data_disclaimer
 type QueryValue = str | int | float | list[str] | list[int] | list[float]
 
 
-def goalie_summary(season: int | list[int],
+def skater_seasons(season: int | list[int],
+                   name: str | list[str] | None = None,
                    team: str | list[str] = 'ALL',
-                   min_games_played: int = 0,
+                   min_icetime: int = 0,
                    situation: str = 'all',
                    combine_seasons: bool = False,
-                 quiet: bool = False) -> pl.DataFrame:
-    """ Return goalie-level season summaries.
+                   quiet: bool = False) -> pl.DataFrame:
+    """ Return skater-level season summary data
 
-    Primary function for retrieving goalie-level season summaries. Given a season or list of
-    seasons, return goalie data summaries for each of those seasons. 
+    Primary function for retrieving skater-level season summaries. Given a season or list of
+    seasons, return skater data summaries for each of those seasons. 
 
-    Can provide further filters via a team or list of teams, a minimum games-played cutoff, or
+    Can also provide a name or list of names to get only summaries for specific player(s).
+
+    Can provide further filters via a team or list of teams, a minimum icetime cutoff, or
     a specific situation/game state.
 
     Args:
 
         season: 
             The (list of) season(s) for which to return data
+        name: 
+            Either one or a list of names for which to return stats. Can be a full name, partial
+            name, or just first/last name, defaults to None.
         team: 
             The (list of) team(s) for which to return data, defaults to 'ALL'
         min_icetime: 
@@ -38,15 +43,15 @@ def goalie_summary(season: int | list[int],
         situation: 
             One of 'all', '5on5', '4on5', '5on4', or 'other', defaults to 'all'
         combine_seasons: 
-            If True, and given multiple seasons, combine the results of each season into a
-            single entry for each player, defaults to False
+            If True, and given multiple seasons, combine the results of each season into a single
+            entry for each player, defaults to False
         quiet: 
             If set to True, don't print the data disclaimer, defaults to False
 
     Returns:
 
         A polars DataFrame containing all of the requested data.
-        
+
     Raises:
     
         ValueError: An input of either incorrect value or type was provided.
@@ -55,14 +60,15 @@ def goalie_summary(season: int | list[int],
     column_mapping: dict[str, QueryValue] = {
         'season': season,
         'team': team,
+        'name': name,
         'situation': situation
     }
 
     qualifiers: dict[str, str] = {
-        'gamesPlayed': f'>={min_games_played}'
+        'iceTime': f'>={min_icetime}'
     }
 
-    results: pl.DataFrame = query_table(table='goalies', column_mapping=column_mapping,
+    results: pl.DataFrame = query_table(table='skaters', column_mapping=column_mapping,
                                         qualifiers=qualifiers, combine_seasons=combine_seasons,
                                         order_by=['team', 'season'])
 

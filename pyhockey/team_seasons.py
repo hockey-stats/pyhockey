@@ -12,7 +12,7 @@ from pyhockey.util.data_disclaimer import print_data_disclaimer
 type QueryValue = str | int | float | list[str] | list[int] | list[float]
 
 
-def team_summary(season: int | list[int],
+def team_seasons(season: int | list[int],
                  team: str | list[str] = 'ALL',
                  situation: str = 'all',
                  combine_seasons: bool = False,
